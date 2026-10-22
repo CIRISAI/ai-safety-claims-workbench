@@ -27,13 +27,17 @@ harness:
   branch: market4/correction-eval
   commit: d7b655f03096eb4c12a0842e9a1cbf7afd69b00d
   dispatch_repo: CIRISAI/RATCHET
-  dispatch_ref: master
+  dispatch_ref: m4-pilot-workflow-v1  # RATCHET tag on workflow commit 94bbb817; the procedure cannot drift
   workflow: market4_correction_eval.yml
   module: tools/qa_runner/modules/correction_episode_tests.py
   engine_commit: 7e0cb939c6641117aa6cf4468166e2ff16f66cef
   model: qwen/qwen3.6-35b-a3b
   llm_base_url: https://openrouter.ai/api/v1
   template_id: default
+  constraints_url: https://raw.githubusercontent.com/CIRISAI/RATCHET/94bbb8175fa762f45704fda669bb0a5dfd1a7e8b/experiments/claims_registry/m4_env/constraints-cirisagent-81e9bf26.txt
+  constraints_sha256: 863a71489fc4497ad04311ade7e6494579cfe3685fd1073013cccfc1fa9bc2ba
+  provider_order: DeepInfra,Parasail  # OpenRouter preference; falls back if unavailable
+  llm_seed: '20261022'  # sent with every call; temperature is 0 by default
 # Entrypoint, run from this folder: dispatches the CI workflow with the frozen cases (URL + sha256),
 # waits, downloads every per-case raw log and writes one JSON-lines raw log under $WORKBENCH_RUNS.
 # Set M4_RUN_ID to adopt an already-finished run instead of dispatching a new one.

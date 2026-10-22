@@ -64,6 +64,10 @@ def main():
            "-f", f"cases_url={cases_url}", "-f", f"cases_sha256={sha}", "-f", f"harness_ref={harness['commit']}",
            "-f", f"engine_commit={harness['engine_commit']}", "-f", f"model={harness['model']}",
            "-f", f"template_id={harness['template_id']}",
+           "-f", f"constraints_url={harness.get('constraints_url', '')}",
+           "-f", f"constraints_sha256={harness.get('constraints_sha256', '')}",
+           "-f", f"provider_order={harness.get('provider_order', '')}",
+           "-f", f"llm_seed={harness.get('llm_seed', '')}",
            *(["-f", f"case_filter={os.environ['M4_CASE_FILTER']}"] if os.environ.get("M4_CASE_FILTER") else []))
         print(f"dispatched {harness['workflow']} on {repo}@{harness['dispatch_ref']} (harness {harness['commit'][:12]}) with cases {sha[:12]}", flush=True)
         for _ in range(30):
@@ -88,7 +92,13 @@ def main():
     with tempfile.TemporaryDirectory() as tmp:
         sh("gh", "run", "download", run_id, "-R", repo, "-n", "m4-frozen-cases", "-D", tmp)
         manifest = json.loads(next(Path(tmp).rglob("run-manifest.json")).read_text(encoding="utf-8"))
-    for key, want in (("harness_commit", harness["commit"]), ("engine_commit", harness["engine_commit"]), ("cases_sha256", sha)):
+    # The workflow file is the dispatch tag's; the run records the commit it ran (github.sha).
+    tag_sha = json.loads(sh("gh", "api", f"repos/{repo}/commits/{harness['dispatch_ref']}"))["sha"]
+    if info["headSha"] != tag_sha:
+        raise SystemExit(f"run {run_id} ran workflow commit {info['headSha']}, dispatch tag {harness['dispatch_ref']} is {tag_sha}")
+    for key, want in (("harness_commit", harness["commit"]), ("engine_commit", harness["engine_commit"]), ("cases_sha256", sha),
+                      ("constraints_sha256", harness.get("constraints_sha256", "")),
+                      ("provider_order", harness.get("provider_order", "")), ("llm_seed", str(harness.get("llm_seed", "")))):
         if manifest.get(key) != want:
             raise SystemExit(f"run {run_id} {key}={manifest.get(key)!r}, contribution names {want!r}")
 
