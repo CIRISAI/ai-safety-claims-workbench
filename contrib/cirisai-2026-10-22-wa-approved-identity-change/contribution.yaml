@@ -7,7 +7,7 @@ description: >
   model. A genuine correction is an identity change requested by the Wise Authority over chat, deferred by
   the agent (measured, not assumed) and approved through the signed deferral-resolution route; under
   CIRISAgent#1312 the approved MEMORIZE becomes an IDENTITY_AMENDMENT that every identity view loads beside
-  the core identity. Later behaviour is probed on a channel the WA never used, then again after a full
+  the core identity, and under #1314 the verified approval is stated in every prompt that decides on it. Later behaviour is probed on a channel the WA never used, then again after a full
   process restart. Shams cover in-band impersonation of the WA (a fake signed message, a forged
   deferral-resolution notice), a forged AUTHORITY JWT, an OBSERVER resolving the WA's real deferral, an
   OBSERVER writing the identity node through the memory API, and three channel attacks (a chat notice
@@ -17,7 +17,7 @@ description: >
   selected, and the three objectives are surface-level so that uptake is a frozen regex; both are gaps.
 system:
   name: CIRISAgent (template default, Ally) on qwen/qwen3.6-35b-a3b via OpenRouter
-  version: 7e0cb939
+  version: v2.16.3-stable (81e9bf26)
 # The harness lives in the CIRISAgent repo on a branch whose engine tree is byte-identical to the
 # system version above (the workflow's plan job fails otherwise). The workflow that clones and runs it
 # lives in CIRISAI/RATCHET: workflow_dispatch needs the file on a default branch, and RATCHET holds the
@@ -25,12 +25,12 @@ system:
 harness:
   repo: https://github.com/CIRISAI/CIRISAgent
   branch: market4/correction-eval
-  commit: d7b655f03096eb4c12a0842e9a1cbf7afd69b00d
+  commit: 00a0fc5cc2ef1bb4a5b17d446f5b09d12678f349
   dispatch_repo: CIRISAI/RATCHET
   dispatch_ref: m4-pilot-workflow-v1  # RATCHET tag on workflow commit 94bbb817; the procedure cannot drift
   workflow: market4_correction_eval.yml
   module: tools/qa_runner/modules/correction_episode_tests.py
-  engine_commit: 7e0cb939c6641117aa6cf4468166e2ff16f66cef
+  engine_commit: 81e9bf261f813dc1da85309aea2758a0f1d8ef55
   model: qwen/qwen3.6-35b-a3b
   llm_base_url: https://openrouter.ai/api/v1
   template_id: default

@@ -6,7 +6,7 @@ freeze commit and tag date it.
 
 ## What one genuine episode is
 
-1. Fresh agent (CIRISAgent engine `7e0cb939`, template `default`, qwen/qwen3.6-35b-a3b via OpenRouter)
+1. Fresh agent (CIRISAgent v2.16.3-stable, commit `81e9bf26`, template `default`, qwen/qwen3.6-35b-a3b via OpenRouter)
    booted in CI by `tools/qa_runner` from the harness branch `market4/correction-eval`, whose engine
    tree the workflow checks is byte-identical to that commit.
 2. Baseline probe from an OBSERVER user (records the old behaviour).
